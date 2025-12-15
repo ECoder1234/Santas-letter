@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Letter to Santa</title>
+  <style>
+    :root {
+      --red: #c62828;
+      --green: #2e7d32;
+      --cream: #fff8e1;
+      --accent: #f9a825;
+      --shadow: rgba(0, 0, 0, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(135deg, var(--red), var(--green));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: min(680px, 100%);
+      background: var(--cream);
+      border-radius: 18px;
+      box-shadow: 0 14px 30px var(--shadow);
+      padding: 28px;
+      border: 4px solid var(--accent);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before,
+    .card::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(12px);
+      opacity: 0.18;
+      background: white;
+    }
+
+    .card::before { width: 140px; height: 140px; top: -40px; left: -20px; }
+    .card::after { width: 120px; height: 120px; bottom: -30px; right: -10px; }
+
+    h1 { margin: 0 0 6px; color: var(--red); letter-spacing: 1px; }
+    p.subtitle { margin: 0 0 24px; color: #5a4b3c; }
+
+    form { display: grid; gap: 18px; }
+
+    label {
+      font-weight: 600;
+      color: #3b3126;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid #e0d6c2;
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #fffdf7;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.12);
+    }
+
+    textarea { min-height: 180px; resize: vertical; }
+
+    .send-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background: linear-gradient(120deg, var(--red), #b71c1c);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 22px;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
+    }
+
+    button:hover { transform: translateY(-1px); box-shadow: 0 12px 22px rgba(0, 0, 0, 0.16); }
+    button:active { transform: translateY(0); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12); }
+
+    .envelope {
+      width: 56px;
+      height: 40px;
+      border: 2px solid var(--red);
+      border-radius: 10px;
+      background: #fffdf7;
+      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.08);
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .envelope svg { width: 36px; height: 28px; stroke: var(--red); fill: none; stroke-width: 3; }
+
+    .envelope.fly { animation: flyAway 2.5s ease-in forwards; }
+
+    @keyframes flyAway {
+      0% { transform: translate(0, 0) scale(1); opacity: 1; }
+      20% { transform: translate(12px, -10px) scale(1.03) rotate(-3deg); }
+      100% { transform: translate(120vw, -70vh) scale(0.85) rotate(15deg); opacity: 0; }
+    }
+
+    .naughty-box {
+      margin-top: -6px;
+      padding: 12px 14px;
+      border: 2px dashed var(--green);
+      border-radius: 10px;
+      background: #f4ecd6;
+      font-weight: 600;
+      color: #2e4b2c;
+    }
+
+    .footer { margin-top: 4px; font-size: 13px; color: #6d5c4a; }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 5, 0, 0.82);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #f5e7d3;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.6s ease;
+      z-index: 10;
+    }
+
+    .overlay.show { opacity: 1; pointer-events: auto; }
+
+    .overlay::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(#c9a13f 8px, transparent 10px),
+        radial-gradient(#c9a13f 8px, transparent 10px);
+      background-size: 48px 120px;
+      background-position: 0 0, 24px 60px;
+      opacity: 0.5;
+      filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.3));
+    }
+
+    .overlay::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25) 6px, transparent 6px, transparent 30px);
+      opacity: 0.25;
+    }
+
+    .overlay-content { position: relative; z-index: 1; padding: 18px 24px; border: 2px solid #c9a13f; border-radius: 12px; background: rgba(35, 20, 5, 0.6); box-shadow: 0 12px 24px rgba(0, 0, 0, 0.45); }
+    .overlay-title { font-size: 22px; font-weight: 800; margin-bottom: 6px; letter-spacing: 0.5px; }
+    .overlay-sub { font-size: 16px; color: #f3d9a4; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Send Your Letter to Santa</h1>
+    <p class="subtitle">Tell Santa your wishes and sign your name so his elves know who to thank.</p>
+    <form id="santaForm" method="POST" action="https://sociplus.com/n8n/webhook/8635cfcc-e734-469d-9cd0-aece4ec1ebb0">
+      <div>
+        <label for="senderName">Your Name</label>
+        <input id="senderName" name="senderName" type="text" placeholder="E.g., Chris Kringle Jr." required>
+      </div>
+      <div>
+        <label for="letterBody">Your Letter</label>
+        <textarea id="letterBody" name="letterBody" placeholder="Dear Santa..." required></textarea>
+      </div>
+      <div class="send-row">
+        <button id="sendButton" type="submit">Send to Santa</button>
+        <div class="envelope" aria-hidden="true">
+          <svg viewBox="0 0 64 40" role="presentation">
+            <path d="M4 6h56v28H4z" />
+            <path d="M4 6l28 20L60 6" />
+          </svg>
+        </div>
+      </div>
+      <div class="naughty-box">Are you naughty or nice?</div>
+      <div class="footer">This letter is delivered with North Pole express magic.</div>
+    </form>
+  </main>
+
+  <div id="lockOverlay" class="overlay">
+    <div class="overlay-content">
+      <div class="overlay-title">You only can send one message</div>
+      <div class="overlay-sub">Do you want to be naughty?</div>
+    </div>
+  </div>
+
+  <audio id="hohoAudio" src="SANTA.mp3" preload="auto"></audio>
+
+  <script>
+    (function () {
+      const form = document.getElementById('santaForm');
+      const envelope = document.querySelector('.envelope');
+      const audio = document.getElementById('hohoAudio');
+      const overlay = document.getElementById('lockOverlay');
+
+      if (!form) return;
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        // Restart envelope animation
+        envelope.classList.remove('fly');
+        void envelope.offsetWidth;
+        envelope.classList.add('fly');
+
+        // Play Santa laugh
+        if (audio) {
+          audio.currentTime = 0;
+          audio.play().catch(() => {});
+        }
+
+        // Send the form data without leaving the page
+        const formData = new FormData(form);
+        fetch(form.action, { method: 'POST', body: formData }).catch(() => {});
+
+        // Lock the screen after 40 seconds
+        setTimeout(() => {
+          overlay.classList.add('show');
+        }, 40000);
+      });
+    })();
+  </script>
+</body>
+</html>
